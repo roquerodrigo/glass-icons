@@ -3,6 +3,13 @@ import type { GlassStyle, Glyph, OutputVariant } from './types'
 
 export const CANVAS_SIZE = 512
 
+const OPTICAL_DAMPING = 0.4
+const OPTICAL_MAX_SHIFT = 0.05
+
+function clamp(value: number, limit: number): number {
+  return Math.min(limit, Math.max(-limit, value))
+}
+
 function backgroundDefs(style: GlassStyle, clipPathData: string | null): string {
   return [
     '<defs>',
@@ -42,9 +49,12 @@ function glyphLayer(glyph: Glyph, style: GlassStyle, variant: OutputVariant): st
   const [minX, minY, viewWidth, viewHeight] = glyph.viewBox.split(/[\s,]+/).map(Number)
   const target = CANVAS_SIZE * style.glyphScale * variant.safeZone
   const scale = target / Math.max(viewWidth, viewHeight)
-  const center = style.opticalAlignment && glyph.opticalCenter
-    ? glyph.opticalCenter
-    : { x: minX + viewWidth / 2, y: minY + viewHeight / 2 }
+  const center = { x: minX + viewWidth / 2, y: minY + viewHeight / 2 }
+  if (style.opticalAlignment && glyph.opticalCenter) {
+    const shiftLimit = Math.max(viewWidth, viewHeight) * OPTICAL_MAX_SHIFT
+    center.x += clamp((glyph.opticalCenter.x - center.x) * OPTICAL_DAMPING, shiftLimit)
+    center.y += clamp((glyph.opticalCenter.y - center.y) * OPTICAL_DAMPING, shiftLimit)
+  }
   const translateX = CANVAS_SIZE / 2 - center.x * scale
   const translateY = CANVAS_SIZE / 2 - center.y * scale
   const markup = glyph.mode === 'glass' ? glyph.markup.replaceAll('#fff', style.glassTint) : glyph.markup
