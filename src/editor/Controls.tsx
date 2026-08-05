@@ -95,6 +95,34 @@ export function Controls({ style, glyphMode, onChange }: ControlsProps) {
       </div>
 
       <div className="control-group">
+        <span className="control-label">Shadow</span>
+        <div className="control-row">
+          <label className="slider-field">
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={style.shadowOpacity}
+              onChange={(event) => patch({ shadowOpacity: Number(event.target.value) })}
+            />
+            Opacity
+          </label>
+          <label className="slider-field">
+            <input
+              type="range"
+              min="0"
+              max="32"
+              step="1"
+              value={style.shadowBlur}
+              onChange={(event) => patch({ shadowBlur: Number(event.target.value) })}
+            />
+            Blur
+          </label>
+        </div>
+      </div>
+
+      <div className="control-group">
         <span className="control-label">Shape</span>
         <div className="control-row">
           {shapes.map((shape) => (

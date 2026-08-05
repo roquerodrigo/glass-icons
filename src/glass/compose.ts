@@ -12,7 +12,7 @@ function backgroundDefs(style: GlassStyle, clipPathData: string | null): string 
     '<linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.32"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>',
     '<filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="8"/></filter>',
     '<filter id="softer" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="26"/></filter>',
-    `<filter id="glyphShadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="7" stdDeviation="11" flood-color="#000" flood-opacity="0.3"/></filter>`,
+    `<filter id="glyphShadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="7" stdDeviation="${style.shadowBlur}" flood-color="#000" flood-opacity="${style.shadowOpacity}"/></filter>`,
     clipPathData ? `<clipPath id="shape"><path d="${clipPathData}"/></clipPath>` : '',
     '</defs>',
   ].join('')

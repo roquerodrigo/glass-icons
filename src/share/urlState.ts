@@ -40,6 +40,8 @@ export function readSharedState(search: string): SharedState {
       glassTint: parseColor(params.get('tint'), defaultStyle.glassTint),
       glyphScale: parseFraction(params.get('size'), 0.35, 0.8, defaultStyle.glyphScale),
       glassIntensity: parseFraction(params.get('glass'), 0, 1, defaultStyle.glassIntensity),
+      shadowOpacity: parseFraction(params.get('shadow'), 0, 1, defaultStyle.shadowOpacity),
+      shadowBlur: parseFraction(params.get('blur'), 0, 32, defaultStyle.shadowBlur),
       shape: shapeParam && shapes.includes(shapeParam) ? shapeParam : defaultStyle.shape,
     },
   }
@@ -54,6 +56,8 @@ export function buildShareQuery(icon: SharedIcon, style: GlassStyle): string {
     tint: style.glassTint.slice(1),
     size: String(style.glyphScale),
     glass: String(style.glassIntensity),
+    shadow: String(style.shadowOpacity),
+    blur: String(style.shadowBlur),
     shape: style.shape,
   })
   return params.toString()
