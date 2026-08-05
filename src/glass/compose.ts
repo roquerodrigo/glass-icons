@@ -53,10 +53,10 @@ function glyphLayer(glyph: Glyph, style: GlassStyle, variant: OutputVariant): st
   ].join('')
 }
 
-export function composeIconSvg(glyph: Glyph | null, style: GlassStyle, variant: OutputVariant): string {
+export function composeIconSvg(glyph: Glyph | null, style: GlassStyle, variant: OutputVariant, pixelSize = CANVAS_SIZE): string {
   const clipPathData = variant.fullBleed ? null : shapePath(style.shape, CANVAS_SIZE)
   return [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${CANVAS_SIZE}" height="${CANVAS_SIZE}" viewBox="0 0 ${CANVAS_SIZE} ${CANVAS_SIZE}">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${pixelSize}" height="${pixelSize}" viewBox="0 0 ${CANVAS_SIZE} ${CANVAS_SIZE}">`,
     backgroundDefs(style, clipPathData),
     backgroundLayers(style, variant, clipPathData),
     glyph ? glyphLayer(glyph, style, variant) : '',
