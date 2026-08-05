@@ -7,10 +7,18 @@ interface PreviewProps {
   style: GlassStyle
 }
 
+const PREVIEW_PIXEL_SIZE = 1024
+
 export function Preview({ glyph, style }: PreviewProps) {
   const [dock, setDock] = useState<'dark' | 'light'>('dark')
-  const shaped = useMemo(() => svgToDataUrl(composeIconSvg(glyph, style, { fullBleed: false, safeZone: 1 })), [glyph, style])
-  const maskable = useMemo(() => svgToDataUrl(composeIconSvg(glyph, style, { fullBleed: true, safeZone: 0.8 })), [glyph, style])
+  const shaped = useMemo(
+    () => svgToDataUrl(composeIconSvg(glyph, style, { fullBleed: false, safeZone: 1 }, PREVIEW_PIXEL_SIZE)),
+    [glyph, style],
+  )
+  const maskable = useMemo(
+    () => svgToDataUrl(composeIconSvg(glyph, style, { fullBleed: true, safeZone: 0.8 }, PREVIEW_PIXEL_SIZE)),
+    [glyph, style],
+  )
 
   return (
     <section className="preview" aria-label="Icon preview">
