@@ -42,6 +42,7 @@ export function readSharedState(search: string): SharedState {
       glassIntensity: parseFraction(params.get('glass'), 0, 1, defaultStyle.glassIntensity),
       shadowOpacity: parseFraction(params.get('shadow'), 0, 1, defaultStyle.shadowOpacity),
       shadowBlur: parseFraction(params.get('blur'), 0, 32, defaultStyle.shadowBlur),
+      opticalAlignment: params.get('optical') === '1',
       shape: shapeParam && shapes.includes(shapeParam) ? shapeParam : defaultStyle.shape,
     },
   }
@@ -60,6 +61,7 @@ export function buildShareQuery(icon: SharedIcon, style: GlassStyle): string {
     blur: String(style.shadowBlur),
     shape: style.shape,
   })
+  if (style.opticalAlignment) params.set('optical', '1')
   return params.toString()
 }
 

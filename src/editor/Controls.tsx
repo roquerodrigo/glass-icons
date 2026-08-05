@@ -74,6 +74,15 @@ export function Controls({ style, glyphMode, onChange }: ControlsProps) {
             />
             Size
           </label>
+          <button
+            type="button"
+            className={style.opticalAlignment ? 'chip chip-active' : 'chip'}
+            aria-pressed={style.opticalAlignment}
+            title="Center by the glyph's visual mass instead of its bounding box"
+            onClick={() => patch({ opticalAlignment: !style.opticalAlignment })}
+          >
+            Optical centering
+          </button>
         </div>
       </div>
 
