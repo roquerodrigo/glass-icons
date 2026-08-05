@@ -42,8 +42,11 @@ function glyphLayer(glyph: Glyph, style: GlassStyle, variant: OutputVariant): st
   const [minX, minY, viewWidth, viewHeight] = glyph.viewBox.split(/[\s,]+/).map(Number)
   const target = CANVAS_SIZE * style.glyphScale * variant.safeZone
   const scale = target / Math.max(viewWidth, viewHeight)
-  const translateX = (CANVAS_SIZE - viewWidth * scale) / 2 - minX * scale
-  const translateY = (CANVAS_SIZE - viewHeight * scale) / 2 - minY * scale
+  const center = style.opticalAlignment && glyph.opticalCenter
+    ? glyph.opticalCenter
+    : { x: minX + viewWidth / 2, y: minY + viewHeight / 2 }
+  const translateX = CANVAS_SIZE / 2 - center.x * scale
+  const translateY = CANVAS_SIZE / 2 - center.y * scale
   const markup = glyph.mode === 'glass' ? glyph.markup.replaceAll('#fff', style.glassTint) : glyph.markup
   return [
     `<g filter="url(#glyphShadow)">`,

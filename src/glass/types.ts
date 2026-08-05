@@ -6,6 +6,7 @@ export interface Glyph {
   viewBox: string
   markup: string
   mode: GlyphMode
+  opticalCenter: { x: number; y: number } | null
 }
 
 export interface GlassStyle {
@@ -17,6 +18,7 @@ export interface GlassStyle {
   glassIntensity: number
   shadowOpacity: number
   shadowBlur: number
+  opticalAlignment: boolean
   shape: IconShape
 }
 

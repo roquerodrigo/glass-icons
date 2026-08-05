@@ -26,5 +26,6 @@ export const defaultStyle: GlassStyle = {
   glassIntensity: 0,
   shadowOpacity: 0.5,
   shadowBlur: 32,
+  opticalAlignment: false,
   shape: 'rounded',
 }
