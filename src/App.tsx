@@ -53,10 +53,8 @@ export default function App() {
       {glyphError && <p className="load-error">The selected icon failed to load ({glyphError}). Pick another one.</p>}
       <main className="workbench">
         {catalog ? <Gallery catalog={catalog} selected={selected} onSelect={setSelected} /> : <p className="loading">Loading catalog…</p>}
-        <div className="stage">
-          <Preview glyph={glyph} style={style} />
-          <ExportCard glyph={glyph} style={style} iconName={selected?.name ?? null} />
-        </div>
+        <Preview glyph={glyph} style={style} />
+        <ExportCard glyph={glyph} style={style} iconName={selected?.name ?? null} />
         <Controls style={style} glyphMode={glyph?.mode ?? null} onChange={setStyle} />
       </main>
       <LicensesFooter catalog={catalog} />

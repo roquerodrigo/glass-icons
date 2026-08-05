@@ -50,13 +50,35 @@ body {
 .workbench {
   display: grid;
   grid-template-columns: minmax(280px, 340px) minmax(320px, 1fr) minmax(260px, 320px);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    'gallery preview controls'
+    'gallery export controls';
   gap: 1.25rem;
   align-items: start;
   flex: 1;
 }
 
 .gallery,
-.stage > *,
+.loading {
+  grid-area: gallery;
+}
+
+.preview {
+  grid-area: preview;
+}
+
+.export-card {
+  grid-area: export;
+}
+
+.controls {
+  grid-area: controls;
+}
+
+.gallery,
+.preview,
+.export-card,
 .controls {
   background: var(--panel);
   border: 1px solid var(--panel-border);
@@ -154,12 +176,6 @@ body {
 .gallery-hint {
   color: var(--text-muted);
   font-size: 0.8rem;
-}
-
-.stage {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
 }
 
 .preview {
@@ -386,16 +402,23 @@ input:focus-visible {
 @media (max-width: 1100px) {
   .workbench {
     grid-template-columns: minmax(260px, 1fr) minmax(320px, 1.4fr);
-  }
-
-  .controls {
-    grid-column: 1 / -1;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      'gallery preview'
+      'gallery export'
+      'controls controls';
   }
 }
 
 @media (max-width: 760px) {
   .workbench {
     grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-template-areas:
+      'gallery'
+      'preview'
+      'controls'
+      'export';
   }
 
   .gallery {
