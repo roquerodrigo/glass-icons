@@ -363,6 +363,27 @@ body {
   filter: grayscale(0.6) brightness(0.7);
 }
 
+.share-button {
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  padding: 0.65rem 1rem;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.share-button:hover:enabled {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.share-button:disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
 .export-note {
   color: var(--text-muted);
   font-size: 0.78rem;

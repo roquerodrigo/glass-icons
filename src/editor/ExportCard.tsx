@@ -12,6 +12,13 @@ export function ExportCard({ glyph, style, iconName }: ExportCardProps) {
   const [appName, setAppName] = useState('My App')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
+
+  const copyShareLink = async () => {
+    await navigator.clipboard.writeText(window.location.href)
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 2000)
+  }
 
   const exportAssets = async () => {
     if (!glyph) return
@@ -41,6 +48,9 @@ export function ExportCard({ glyph, style, iconName }: ExportCardProps) {
       </label>
       <button type="button" className="export-button" disabled={!glyph || busy} onClick={exportAssets}>
         {busy ? 'Rendering assets…' : 'Download PWA assets'}
+      </button>
+      <button type="button" className="share-button" disabled={!glyph} onClick={copyShareLink}>
+        {copied ? 'Link copied' : 'Copy share link'}
       </button>
       <p className="export-note">
         ZIP with PNG icons (192, 512, maskable, apple touch), favicons + .ico, the composed SVG, a manifest.webmanifest and a
