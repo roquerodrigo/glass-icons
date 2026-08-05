@@ -2,7 +2,7 @@
 
 Compose Liquid Glass style app icons from open licensed icon sets and download the full PWA asset kit — entirely in the browser.
 
-**Live app:** https://roquerodrigo.github.io/glass-icons/
+**Live app:** https://www.rodrigoroque.dev/glass-icons/
 
 ## What it does
 
