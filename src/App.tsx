@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { loadGlyph } from './catalog/glyphLoader'
 import type { CatalogIcon } from './catalog/types'
@@ -8,21 +8,30 @@ import { ExportCard } from './editor/ExportCard'
 import { Gallery } from './editor/Gallery'
 import { LicensesFooter } from './editor/LicensesFooter'
 import { Preview } from './editor/Preview'
-import { defaultStyle } from './glass/presets'
 import type { GlassStyle, Glyph } from './glass/types'
+import { readSharedState, syncUrl } from './share/urlState'
 
 export default function App() {
   const { catalog, error } = useCatalog()
+  const shared = useMemo(() => readSharedState(window.location.search), [])
   const [selected, setSelected] = useState<CatalogIcon | null>(null)
   const [glyph, setGlyph] = useState<Glyph | null>(null)
   const [glyphError, setGlyphError] = useState<string | null>(null)
-  const [style, setStyle] = useState<GlassStyle>(defaultStyle)
+  const [style, setStyle] = useState<GlassStyle>(shared.style)
 
   useEffect(() => {
     if (!catalog || selected) return
-    const initial = catalog.icons.find((icon) => icon.set === 'icons8-glass' && icon.name === 'rocket') ?? catalog.icons[0]
+    const fromUrl = shared.icon
+      ? catalog.icons.find((icon) => icon.set === shared.icon?.set && icon.name === shared.icon?.name)
+      : undefined
+    const initial =
+      fromUrl ?? catalog.icons.find((icon) => icon.set === 'icons8-glass' && icon.name === 'rocket') ?? catalog.icons[0]
     setSelected(initial)
-  }, [catalog, selected])
+  }, [catalog, selected, shared])
+
+  useEffect(() => {
+    if (selected) syncUrl(selected, style)
+  }, [selected, style])
 
   useEffect(() => {
     if (!catalog || !selected) return
