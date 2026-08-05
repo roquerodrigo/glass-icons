@@ -24,5 +24,7 @@ export const defaultStyle: GlassStyle = {
   glassTint: '#ffffff',
   glyphScale: 0.55,
   glassIntensity: 0.9,
+  shadowOpacity: 0.3,
+  shadowBlur: 11,
   shape: 'squircle',
 }

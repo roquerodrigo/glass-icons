@@ -15,6 +15,8 @@ export interface GlassStyle {
   glassTint: string
   glyphScale: number
   glassIntensity: number
+  shadowOpacity: number
+  shadowBlur: number
   shape: IconShape
 }
 
