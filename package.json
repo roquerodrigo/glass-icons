@@ -1,0 +1,36 @@
+{
+  "name": "glass-icons",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "catalog": "tsx scripts/build-catalog.ts",
+    "predev": "tsx scripts/build-catalog.ts --if-missing",
+    "dev": "vite",
+    "prebuild": "tsx scripts/build-catalog.ts --if-missing",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fontsource-variable/space-grotesk": "^5.3.0",
+    "fflate": "^0.8.3",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@phosphor-icons/core": "^2.1.1",
+    "@tabler/icons": "^3.46.0",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "heroicons": "^2.2.0",
+    "lucide-static": "^1.28.0",
+    "oxlint": "^1.75.0",
+    "simple-icons": "^16.28.0",
+    "tsx": "^4.23.8",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.0"
+  }
+}
