@@ -276,10 +276,11 @@ body {
 }
 
 .preset-swatch {
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: none;
   border-radius: 10px;
   cursor: pointer;
   height: 32px;
+  padding: 0;
   width: 32px;
   transition: transform 0.12s ease;
 }
