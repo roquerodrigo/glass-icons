@@ -1,5 +1,7 @@
 # Glass Icons
 
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-db61a2?logo=githubsponsors&logoColor=white&style=for-the-badge)](https://github.com/sponsors/roquerodrigo)
+
 Compose Liquid Glass style app icons from open licensed icon sets and download the full PWA asset kit — entirely in the browser.
 
 **Live app:** https://www.rodrigoroque.dev/glass-icons/
@@ -43,6 +45,10 @@ npm run build
 | `src/editor/` | Gallery, live preview, style controls and the export card |
 | `src/export/` | SVG rasterization to PNG, ICO assembly, manifest generation and ZIP packaging |
 | `vendor/icons8-liquid-glass/` | Vendored copy of the Icons8 Liquid Glass icons (MIT), pinned to the commit recorded in `COMMIT` |
+
+## Support
+
+This project is built and maintained on personal time. If it is useful to you, consider [sponsoring the work](https://github.com/sponsors/roquerodrigo) — it keeps the development, the testing and the releases coming.
 
 ## Licenses
 
