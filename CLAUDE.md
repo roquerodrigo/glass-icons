@@ -1,30 +1,34 @@
-# Glass Icons
+# glass-icons
 
-Browser-only Liquid Glass PWA icon generator. See `README.md` for the feature
-list and the `src/` responsibility table.
+Browser-only Liquid Glass PWA icon generator. Composes glyphs from six open icon
+sets over a self-contained glass SVG background and exports a full PWA asset ZIP.
+Everything runs client side; there is no backend. Deployed to GitHub Pages at
+`/glass-icons/`. Public repo — see README for the icon sets and their licenses.
 
-## Gotchas
+## Generated assets (not in git)
+`public/icons/` and `public/catalog.json` are gitignored and produced by
+`scripts/build-catalog.ts` from the icon-set packages. `npm run dev`/`npm run
+build` regenerate them only when missing (the `predev`/`prebuild` hooks pass
+`--if-missing`). Run `npm run catalog` to force a full rebuild after changing the
+script, the icon-set deps, or the vendored Icons8 set — the `--if-missing` runs
+will not pick those changes up.
 
-- **The glass background must stay a self-contained SVG with no
-  `backdrop-filter`.** That is a hard design constraint, not an oversight: the
-  live preview and the rasterized PNGs are the same SVG, so anything the browser
-  can't reproduce in a headless canvas would make the export diverge from the
-  preview. Keep effects (gradients, specular, rim light) inline in the SVG.
+## Non-obvious constraints
+- The glass background is emitted as plain SVG (superellipse squircle, layered
+  gradients, specular/rim light) with **no `backdrop-filter`**, on purpose: that
+  keeps the on-screen preview and the rasterized PNG export pixel-identical. Do
+  not reach for `backdrop-filter`/CSS glass — it would desync preview and output.
+- `vite.config.ts` sets `base: '/glass-icons/'` because the site lives under a
+  Pages subpath. Changing it breaks all asset URLs in the deployed build.
+- Icons8 Liquid Glass icons are vendored as `.tsx` React components under
+  `vendor/icons8-liquid-glass/`, pinned to the hash in that dir's `COMMIT` file
+  (upstream ships no npm package). The other five sets come from npm deps.
+- `build-catalog.ts` normalizes each glyph: `stroke` sets get `currentColor`
+  stroke, `fill` sets get `currentColor` fill only when they carry no paint of
+  their own, `glass` (Icons8) keeps its baked-in colors. Preserve this per-set
+  `mode` handling when touching the script.
 
-- **`public/icons/` and `public/catalog.json` are generated and gitignored.**
-  `predev`/`prebuild` run the catalog build with `--if-missing`, so they only
-  generate when absent — they will NOT pick up changes to `scripts/build-catalog.ts`
-  or to the icon-set packages. After changing either, rerun `npm run catalog`
-  explicitly to regenerate.
-
-- **App is served from a subpath** (`base: '/glass-icons/'` in `vite.config.ts`).
-  Reference assets through Vite (`import.meta.env.BASE_URL`, bundler imports),
-  never with root-absolute `/...` paths.
-
-- **`vendor/icons8-liquid-glass/` is a vendored copy** pinned to the hash in
-  `vendor/icons8-liquid-glass/COMMIT`. Update that file when re-syncing the
-  upstream icons.
-
-- Each icon set keeps its own upstream license (mirrored in `LICENSES/`); Simple
-  Icons brand marks carry trademark constraints. Preserve attribution when
-  touching catalog or export code.
+## CI / release
+GitHub Pages deploy runs on push to `main` (`.github/workflows/deploy.yml`:
+lint + `npm run build`, then `deploy-pages`). Branch protection is on, so land
+changes through a PR with green CI; merge with **rebase merge only**.
