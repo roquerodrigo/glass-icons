@@ -23,9 +23,11 @@ will not pick those changes up.
 - Icons8 Liquid Glass icons are vendored as `.tsx` React components under
   `vendor/icons8-liquid-glass/`, pinned to the hash in that dir's `COMMIT` file
   (upstream ships no npm package). The other five sets come from npm deps.
-- `build-catalog.ts` normalizes each glyph: `stroke` sets get `currentColor`
-  stroke, `fill` sets get `currentColor` fill only when they carry no paint of
-  their own, `glass` (Icons8) keeps its baked-in colors. Preserve this per-set
+- `build-catalog.ts` normalizes each glyph: the root `<svg>` presentation
+  attributes move onto a wrapping `<g>`, so `stroke` sets keep the
+  `currentColor` stroke their upstream markup already carries (the script adds
+  none); `fill` sets get `currentColor` fill only when they carry no paint of
+  their own; `glass` (Icons8) keeps its baked-in colors. Preserve this per-set
   `mode` handling when touching the script.
 
 ## CI / release
