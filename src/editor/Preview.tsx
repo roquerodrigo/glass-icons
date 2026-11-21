@@ -11,6 +11,7 @@ import { IconCanvas } from './IconCanvas'
 interface PreviewProps {
   glyph: Glyph | null
   style: GlassStyle
+  className?: string
 }
 
 type DockTone = 'dark' | 'light'
@@ -33,7 +34,7 @@ const sizeSamples: SizeSample[] = [
   { caption: 'maskable', pixels: 64, isMaskable: true },
 ]
 
-export function Preview({ glyph, style }: PreviewProps) {
+export function Preview({ glyph, style, className }: PreviewProps) {
   const [dock, setDock] = useState<DockTone>('dark')
   const shadow = useMemo(
     () => svgToDataUrl(composeIconSvg(glyph, style, shapedVariant, SHADOW_PIXEL_SIZE)),
@@ -41,7 +42,7 @@ export function Preview({ glyph, style }: PreviewProps) {
   )
 
   return (
-    <Card aria-label="Preview">
+    <Card aria-label="Preview" className={className}>
       <VStack gap={4} hAlign="center">
         <VStack gap={6} hAlign="center" padding={8} width="100%" className={`preview-dock preview-dock-${dock}`}>
           <span className="preview-main">
