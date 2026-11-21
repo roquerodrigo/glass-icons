@@ -1,3 +1,10 @@
+import { Banner } from '@astryxdesign/core/Banner'
+import { Grid } from '@astryxdesign/core/Grid'
+import { Heading } from '@astryxdesign/core/Heading'
+import { Layout, LayoutContent, LayoutFooter, LayoutHeader } from '@astryxdesign/core/Layout'
+import { Spinner } from '@astryxdesign/core/Spinner'
+import { Text } from '@astryxdesign/core/Text'
+import { VStack } from '@astryxdesign/core/VStack'
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { loadGlyph } from './catalog/glyphLoader'
@@ -50,23 +57,48 @@ export default function App() {
   }, [catalog, selected])
 
   return (
-    <div
+    <Layout
+      height="auto"
       className="workspace"
       style={{ '--ambient-top': style.backgroundTop, '--ambient-bottom': style.backgroundBottom } as React.CSSProperties}
+      header={
+        <LayoutHeader>
+          <VStack gap={1}>
+            <Heading level={1}>Glass Icons</Heading>
+            <Text color="secondary">
+              Turn any open licensed icon into a Liquid Glass app icon and download the full PWA asset kit.
+            </Text>
+          </VStack>
+        </LayoutHeader>
+      }
+      footer={
+        <LayoutFooter hasDivider>
+          <LicensesFooter catalog={catalog} />
+        </LayoutFooter>
+      }
     >
-      <header className="masthead">
-        <h1>Glass Icons</h1>
-        <p>Turn any open licensed icon into a Liquid Glass app icon and download the full PWA asset kit.</p>
-      </header>
-      {error && <p className="load-error">The icon catalog failed to load ({error}). Reload the page to try again.</p>}
-      {glyphError && <p className="load-error">The selected icon failed to load ({glyphError}). Pick another one.</p>}
-      <main className="workbench">
-        {catalog ? <Gallery catalog={catalog} selected={selected} onSelect={setSelected} /> : <p className="loading">Loading catalog…</p>}
-        <Preview glyph={glyph} style={style} />
-        <ExportCard glyph={glyph} style={style} iconName={selected?.name ?? null} />
-        <Controls style={style} glyphMode={glyph?.mode ?? null} onChange={setStyle} />
-      </main>
-      <LicensesFooter catalog={catalog} />
-    </div>
+      <LayoutContent isScrollable={false}>
+        <VStack gap={4}>
+          {error && (
+            <Banner status="error" title="The icon catalog failed to load" description={`${error}. Reload the page to try again.`} />
+          )}
+          {glyphError && (
+            <Banner status="error" title="The selected icon failed to load" description={`${glyphError}. Pick another one.`} />
+          )}
+          <Grid columns={{ minWidth: 300, max: 3 }} gap={5} align="start">
+            {catalog ? (
+              <Gallery catalog={catalog} selected={selected} onSelect={setSelected} />
+            ) : (
+              <Spinner size="lg" label="Loading catalog…" />
+            )}
+            <VStack gap={5}>
+              <Preview glyph={glyph} style={style} />
+              <ExportCard glyph={glyph} style={style} iconName={selected?.name ?? null} />
+            </VStack>
+            <Controls style={style} glyphMode={glyph?.mode ?? null} onChange={setStyle} />
+          </Grid>
+        </VStack>
+      </LayoutContent>
+    </Layout>
   )
 }

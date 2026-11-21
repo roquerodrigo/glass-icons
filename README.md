@@ -19,7 +19,7 @@ Compose Liquid Glass style app icons from open licensed icon sets and download t
   - the composed `icon.svg`
   - a ready `manifest.webmanifest` and an HTML head snippet
 
-Everything runs client side. No uploads, no backend.
+Everything runs client side. No uploads, no backend. The interface is built with the [Astryx](https://github.com/meta/astryx) design system.
 
 ## Development
 
@@ -42,7 +42,7 @@ npm run build
 | `scripts/build-catalog.ts` | Extracts and normalizes SVGs from the icon packages into `public/icons/` plus a searchable `public/catalog.json` |
 | `src/catalog/` | Catalog loading, search and glyph fetching |
 | `src/glass/` | The Liquid Glass engine: shapes, layered background, composition into a standalone SVG |
-| `src/editor/` | Gallery, live preview, style controls and the export card |
+| `src/editor/` | Gallery, live preview, style controls and the export card, composed from Astryx components |
 | `src/export/` | SVG rasterization to PNG, ICO assembly, manifest generation and ZIP packaging |
 | `vendor/icons8-liquid-glass/` | Vendored copy of the Icons8 Liquid Glass icons (MIT), pinned to the commit recorded in `COMMIT` |
 
