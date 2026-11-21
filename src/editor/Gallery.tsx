@@ -6,7 +6,7 @@ import { Text } from '@astryxdesign/core/Text'
 import { TextInput } from '@astryxdesign/core/TextInput'
 import { ToggleButton } from '@astryxdesign/core/ToggleButton'
 import { VStack } from '@astryxdesign/core/VStack'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { iconSvgUrl } from '../catalog/glyphLoader'
 import type { Catalog, CatalogIcon } from '../catalog/types'
 import { useIconSearch } from '../catalog/useCatalog'
@@ -24,6 +24,7 @@ export function Gallery({ catalog, selected, onSelect, className }: GalleryProps
   const [query, setQuery] = useState('')
   const [setFilter, setSetFilter] = useState<string | null>(null)
   const results = useIconSearch(catalog, query, setFilter, RESULT_LIMIT)
+  const darkTileSets = useMemo(() => new Set(catalog.sets.filter((set) => set.mode === 'glass').map((set) => set.id)), [catalog])
 
   return (
     <Card aria-label="Icon gallery" className={className}>
@@ -59,7 +60,7 @@ export function Gallery({ catalog, selected, onSelect, className }: GalleryProps
                 tooltip={icon.title ?? icon.name}
                 isPressed={selected?.set === icon.set && selected?.name === icon.name}
                 onPressedChange={() => onSelect(icon)}
-                className={`icon-tile ${icon.set === 'icons8-glass' ? 'icon-tile-dark' : 'icon-tile-light'}`}
+                className={`icon-tile ${darkTileSets.has(icon.set) ? 'icon-tile-dark' : 'icon-tile-light'}`}
               >
                 <img src={iconSvgUrl(icon)} alt="" loading="lazy" width="28" height="28" />
               </ToggleButton>

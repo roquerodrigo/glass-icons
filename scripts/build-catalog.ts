@@ -12,7 +12,7 @@ interface IconSet {
   label: string
   license: string
   source: string
-  mode: 'stroke' | 'fill' | 'glass'
+  mode: 'stroke' | 'fill' | 'glass' | 'color'
 }
 
 interface CatalogIcon {
@@ -28,7 +28,36 @@ const sets: IconSet[] = [
   { id: 'phosphor', label: 'Phosphor', license: 'MIT', source: 'https://phosphoricons.com', mode: 'fill' },
   { id: 'heroicons', label: 'Heroicons', license: 'MIT', source: 'https://heroicons.com', mode: 'fill' },
   { id: 'simple', label: 'Simple Icons', license: 'CC0-1.0', source: 'https://simpleicons.org', mode: 'fill' },
+  { id: 'fluent-color', label: 'Fluent Color', license: 'MIT', source: 'https://github.com/microsoft/fluentui-system-icons', mode: 'color' },
+  { id: 'fluent-emoji-flat', label: 'Fluent Emoji Flat', license: 'MIT', source: 'https://github.com/microsoft/fluentui-emoji', mode: 'color' },
+  { id: 'fluent-emoji', label: 'Fluent Emoji 3D', license: 'MIT', source: 'https://github.com/microsoft/fluentui-emoji', mode: 'color' },
+  { id: 'noto', label: 'Noto Emoji', license: 'Apache-2.0', source: 'https://github.com/googlefonts/noto-emoji', mode: 'color' },
+  { id: 'noto-v1', label: 'Noto Emoji v1', license: 'Apache-2.0', source: 'https://github.com/googlefonts/noto-emoji', mode: 'color' },
+  { id: 'flat-color-icons', label: 'Flat Color Icons', license: 'MIT', source: 'https://github.com/icons8/flat-color-icons', mode: 'color' },
+  { id: 'glyphs-poly', label: 'Glyphs Poly', license: 'MIT', source: 'https://github.com/gorango/glyphs', mode: 'color' },
+  { id: 'icon-park', label: 'IconPark', license: 'Apache-2.0', source: 'https://github.com/bytedance/IconPark', mode: 'color' },
+  { id: 'meteocons', label: 'Meteocons', license: 'MIT', source: 'https://github.com/basmilius/meteocons', mode: 'color' },
+  { id: 'flat-ui', label: 'Flat UI', license: 'MIT', source: 'https://github.com/designmodo/Flat-UI', mode: 'color' },
 ]
+
+interface IconifyIcon {
+  body: string
+  width?: number
+  height?: number
+  left?: number
+  top?: number
+  hidden?: boolean
+}
+
+interface IconifyCollection {
+  icons: Record<string, IconifyIcon>
+  width?: number
+  height?: number
+  left?: number
+  top?: number
+}
+
+const ICONIFY_DEFAULT_SIZE = 16
 
 const presentationAttributes = new Set([
   'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'fill-rule', 'clip-rule', 'opacity',
@@ -59,13 +88,18 @@ function normalizeGlyph(markup: string, mode: IconSet['mode']): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}">${body}</svg>`
 }
 
-function namespaceIds(markup: string, prefix: string): string {
-  const ids = [...markup.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1])
-  let result = markup
-  for (const id of ids) {
-    result = result.replaceAll(`id="${id}"`, `id="${prefix}_${id}"`).replaceAll(`url(#${id})`, `url(#${prefix}_${id})`)
-  }
-  return result
+function namespaceReferences(markup: string, prefix: string): string {
+  const ids = new Set([...markup.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]))
+  if (ids.size === 0) return markup
+  const rename = (id: string) => `${prefix}-${id}`
+  return markup
+    .replace(/\bid="([^"]+)"/g, (_, id: string) => `id="${rename(id)}"`)
+    .replace(/url\(#([^)]+)\)/g, (match, id: string) => (ids.has(id) ? `url(#${rename(id)})` : match))
+    .replace(/href="#([^"]+)"/g, (match, id: string) => (ids.has(id) ? `href="#${rename(id)}"` : match))
+}
+
+function referencePrefix(setId: string, name: string): string {
+  return `${setId}-${name}`.replaceAll(/[^A-Za-z0-9-]/g, '')
 }
 
 function writeGlyph(setId: string, name: string, markup: string): void {
@@ -86,7 +120,7 @@ async function buildIcons8(): Promise<CatalogIcon[]> {
     const { attributes, inner } = parseRootSvg(markup)
     const viewBox = attributes.get('viewBox')
     if (!viewBox) throw new Error(`icons8 glyph ${name} has no viewBox`)
-    const namespaced = namespaceIds(inner, name.replaceAll(/[^a-z0-9]/g, ''))
+    const namespaced = namespaceReferences(inner, referencePrefix('icons8-glass', name))
     writeGlyph('icons8-glass', name, `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}">${namespaced}</svg>`)
     icons.push({ set: 'icons8-glass', name })
   }
@@ -99,8 +133,26 @@ function buildFromDirectory(setId: string, directory: string, mode: IconSet['mod
     const name = file.replace(/\.svg$/, '')
     const markup = readFileSync(join(directory, file), 'utf8')
     const title = extractTitle(markup)
-    writeGlyph(setId, name, normalizeGlyph(markup, mode))
+    const normalized = normalizeGlyph(markup, mode)
+    writeGlyph(setId, name, mode === 'color' ? namespaceReferences(normalized, referencePrefix(setId, name)) : normalized)
     icons.push(title ? { set: setId, name, title } : { set: setId, name })
+  }
+  return icons
+}
+
+function buildFromIconify(setId: string, collectionPath: string): CatalogIcon[] {
+  const collection = JSON.parse(readFileSync(collectionPath, 'utf8')) as IconifyCollection
+  const icons: CatalogIcon[] = []
+  const entries = Object.entries(collection.icons).sort(([first], [second]) => first.localeCompare(second))
+  for (const [name, icon] of entries) {
+    if (icon.hidden) continue
+    const left = icon.left ?? collection.left ?? 0
+    const top = icon.top ?? collection.top ?? 0
+    const width = icon.width ?? collection.width ?? ICONIFY_DEFAULT_SIZE
+    const height = icon.height ?? collection.height ?? ICONIFY_DEFAULT_SIZE
+    const body = namespaceReferences(icon.body.replaceAll('xlink:href=', 'href='), referencePrefix(setId, name))
+    writeGlyph(setId, name, `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${left} ${top} ${width} ${height}">${body}</svg>`)
+    icons.push({ set: setId, name })
   }
   return icons
 }
@@ -111,6 +163,7 @@ async function main(): Promise<void> {
   for (const set of sets) mkdirSync(join(outputRoot, set.id), { recursive: true })
 
   const nodeModules = join(projectRoot, 'node_modules')
+  const iconifyCollection = (prefix: string) => join(nodeModules, '@iconify-json', prefix, 'icons.json')
   const icons: CatalogIcon[] = [
     ...(await buildIcons8()),
     ...buildFromDirectory('lucide', join(nodeModules, 'lucide-static', 'icons'), 'stroke'),
@@ -118,6 +171,16 @@ async function main(): Promise<void> {
     ...buildFromDirectory('phosphor', join(nodeModules, '@phosphor-icons', 'core', 'assets', 'fill'), 'fill'),
     ...buildFromDirectory('heroicons', join(nodeModules, 'heroicons', '24', 'solid'), 'fill'),
     ...buildFromDirectory('simple', join(nodeModules, 'simple-icons', 'icons'), 'fill'),
+    ...buildFromIconify('fluent-color', iconifyCollection('fluent-color')),
+    ...buildFromIconify('fluent-emoji-flat', iconifyCollection('fluent-emoji-flat')),
+    ...buildFromIconify('fluent-emoji', iconifyCollection('fluent-emoji')),
+    ...buildFromIconify('noto', iconifyCollection('noto')),
+    ...buildFromIconify('noto-v1', iconifyCollection('noto-v1')),
+    ...buildFromIconify('flat-color-icons', iconifyCollection('flat-color-icons')),
+    ...buildFromIconify('glyphs-poly', iconifyCollection('glyphs-poly')),
+    ...buildFromIconify('icon-park', iconifyCollection('icon-park')),
+    ...buildFromDirectory('meteocons', join(nodeModules, '@meteocons', 'svg-static', 'fill'), 'color'),
+    ...buildFromIconify('flat-ui', iconifyCollection('flat-ui')),
   ]
 
   writeFileSync(catalogPath, JSON.stringify({ sets, icons }))

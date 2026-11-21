@@ -38,6 +38,50 @@ function ControlGroup({ title, children }: { title: string; children: ReactNode 
   )
 }
 
+interface GlyphPaintFieldProps {
+  glyphMode: GlyphMode | null
+  style: GlassStyle
+  patch: (changes: Partial<GlassStyle>) => void
+}
+
+function GlyphPaintField({ glyphMode, style, patch }: GlyphPaintFieldProps) {
+  const changeOpacity = (glyphOpacity: number) => patch({ glyphOpacity })
+  if (glyphMode === 'color') {
+    return (
+      <Slider
+        label="Opacity"
+        min={0}
+        max={1}
+        step={0.05}
+        value={style.glyphOpacity}
+        formatValue={formatPercent}
+        valueDisplay="text"
+        onChange={changeOpacity}
+      />
+    )
+  }
+  if (glyphMode === 'glass') {
+    return (
+      <ColorField
+        label="Tint"
+        value={style.glassTint}
+        opacity={style.glyphOpacity}
+        onChange={(glassTint) => patch({ glassTint })}
+        onOpacityChange={changeOpacity}
+      />
+    )
+  }
+  return (
+    <ColorField
+      label="Color"
+      value={style.glyphColor}
+      opacity={style.glyphOpacity}
+      onChange={(glyphColor) => patch({ glyphColor })}
+      onOpacityChange={changeOpacity}
+    />
+  )
+}
+
 export function Controls({ style, glyphMode, onChange, className }: ControlsProps) {
   const patch = (changes: Partial<GlassStyle>) => onChange({ ...style, ...changes })
 
@@ -102,23 +146,7 @@ export function Controls({ style, glyphMode, onChange, className }: ControlsProp
         </ControlGroup>
 
         <ControlGroup title="Glyph">
-          {glyphMode === 'glass' ? (
-            <ColorField
-              label="Tint"
-              value={style.glassTint}
-              opacity={style.glyphOpacity}
-              onChange={(glassTint) => patch({ glassTint })}
-              onOpacityChange={(glyphOpacity) => patch({ glyphOpacity })}
-            />
-          ) : (
-            <ColorField
-              label="Color"
-              value={style.glyphColor}
-              opacity={style.glyphOpacity}
-              onChange={(glyphColor) => patch({ glyphColor })}
-              onOpacityChange={(glyphOpacity) => patch({ glyphOpacity })}
-            />
-          )}
+          <GlyphPaintField glyphMode={glyphMode} style={style} patch={patch} />
           <Slider
             label="Size"
             min={0.35}
