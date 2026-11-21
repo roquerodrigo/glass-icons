@@ -6,6 +6,7 @@ import { Text } from '@astryxdesign/core/Text'
 import { ToggleButton } from '@astryxdesign/core/ToggleButton'
 import { VStack } from '@astryxdesign/core/VStack'
 import type { ReactNode } from 'react'
+import { backgroundFill } from '../glass/background'
 import { presets } from '../glass/presets'
 import type { GlassStyle, GlyphMode, IconShape } from '../glass/types'
 import { ColorField } from './ColorField'
@@ -51,12 +52,15 @@ export function Controls({ style, glyphMode, onChange, className }: ControlsProp
                 label={preset.name}
                 tooltip={preset.name}
                 className="preset-button"
-                isPressed={style.backgroundTop === preset.backgroundTop && style.backgroundBottom === preset.backgroundBottom}
+                isPressed={
+                  style.backgroundBottom === preset.backgroundBottom &&
+                  (!style.backgroundGradient || style.backgroundTop === preset.backgroundTop)
+                }
                 onPressedChange={() => patch({ backgroundTop: preset.backgroundTop, backgroundBottom: preset.backgroundBottom })}
               >
                 <span
                   className="preset-swatch"
-                  style={{ background: `linear-gradient(160deg, ${preset.backgroundTop}, ${preset.backgroundBottom})` }}
+                  style={{ background: backgroundFill(preset.backgroundTop, preset.backgroundBottom, style.backgroundGradient) }}
                 />
               </ToggleButton>
             ))}
@@ -64,10 +68,19 @@ export function Controls({ style, glyphMode, onChange, className }: ControlsProp
         </ControlGroup>
 
         <ControlGroup title="Background">
-          <HStack gap={4} wrap="wrap">
-            <ColorField label="Top" value={style.backgroundTop} onChange={(backgroundTop) => patch({ backgroundTop })} />
-            <ColorField label="Bottom" value={style.backgroundBottom} onChange={(backgroundBottom) => patch({ backgroundBottom })} />
-          </HStack>
+          <Switch
+            label="Gradient"
+            value={style.backgroundGradient}
+            onChange={(backgroundGradient) => patch({ backgroundGradient })}
+          />
+          {style.backgroundGradient ? (
+            <HStack gap={4} wrap="wrap">
+              <ColorField label="Top" value={style.backgroundTop} onChange={(backgroundTop) => patch({ backgroundTop })} />
+              <ColorField label="Bottom" value={style.backgroundBottom} onChange={(backgroundBottom) => patch({ backgroundBottom })} />
+            </HStack>
+          ) : (
+            <ColorField label="Color" value={style.backgroundBottom} onChange={(backgroundBottom) => patch({ backgroundBottom })} />
+          )}
         </ControlGroup>
 
         <ControlGroup title="Glyph">

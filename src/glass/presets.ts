@@ -20,6 +20,7 @@ export const presets: StylePreset[] = [
 export const defaultStyle: GlassStyle = {
   backgroundTop: presets[0].backgroundTop,
   backgroundBottom: presets[0].backgroundBottom,
+  backgroundGradient: true,
   glyphColor: '#ffffff',
   glassTint: '#ffffff',
   glyphScale: 0.65,
