@@ -36,6 +36,16 @@
   min-height: 16rem;
 }
 
+.icon-grid {
+  position: relative;
+}
+
+.icon-grid-row {
+  inset-inline: 0;
+  position: absolute;
+  top: 0;
+}
+
 .icon-tile {
   aspect-ratio: 1;
   height: auto;
