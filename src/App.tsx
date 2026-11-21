@@ -85,17 +85,17 @@ export default function App() {
           {glyphError && (
             <Banner status="error" title="The selected icon failed to load" description={`${glyphError}. Pick another one.`} />
           )}
-          <Grid columns={{ minWidth: 300, max: 3 }} gap={5} align="start">
+          <Grid gap={5} align="start" className="workbench">
             {catalog ? (
-              <Gallery catalog={catalog} selected={selected} onSelect={setSelected} />
+              <Gallery catalog={catalog} selected={selected} onSelect={setSelected} className="workbench-gallery" />
             ) : (
-              <Spinner size="lg" label="Loading catalog…" />
+              <VStack className="workbench-gallery" hAlign="center" padding={8}>
+                <Spinner size="lg" label="Loading catalog…" />
+              </VStack>
             )}
-            <VStack gap={5}>
-              <Preview glyph={glyph} style={style} />
-              <ExportCard glyph={glyph} style={style} iconName={selected?.name ?? null} />
-            </VStack>
-            <Controls style={style} glyphMode={glyph?.mode ?? null} onChange={setStyle} />
+            <Preview glyph={glyph} style={style} className="workbench-preview" />
+            <ExportCard glyph={glyph} style={style} iconName={selected?.name ?? null} className="workbench-export" />
+            <Controls style={style} glyphMode={glyph?.mode ?? null} onChange={setStyle} className="workbench-controls" />
           </Grid>
         </VStack>
       </LayoutContent>

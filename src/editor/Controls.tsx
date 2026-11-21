@@ -14,6 +14,7 @@ interface ControlsProps {
   style: GlassStyle
   glyphMode: GlyphMode | null
   onChange: (style: GlassStyle) => void
+  className?: string
 }
 
 const shapes: { id: IconShape; label: string }[] = [
@@ -36,11 +37,11 @@ function ControlGroup({ title, children }: { title: string; children: ReactNode 
   )
 }
 
-export function Controls({ style, glyphMode, onChange }: ControlsProps) {
+export function Controls({ style, glyphMode, onChange, className }: ControlsProps) {
   const patch = (changes: Partial<GlassStyle>) => onChange({ ...style, ...changes })
 
   return (
-    <Card aria-label="Style controls">
+    <Card aria-label="Style controls" className={className}>
       <VStack gap={5}>
         <ControlGroup title="Presets">
           <HStack gap={1} wrap="wrap">

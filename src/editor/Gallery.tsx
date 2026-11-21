@@ -15,17 +15,18 @@ interface GalleryProps {
   catalog: Catalog
   selected: CatalogIcon | null
   onSelect: (icon: CatalogIcon) => void
+  className?: string
 }
 
 const RESULT_LIMIT = 240
 
-export function Gallery({ catalog, selected, onSelect }: GalleryProps) {
+export function Gallery({ catalog, selected, onSelect, className }: GalleryProps) {
   const [query, setQuery] = useState('')
   const [setFilter, setSetFilter] = useState<string | null>(null)
   const results = useIconSearch(catalog, query, setFilter, RESULT_LIMIT)
 
   return (
-    <Card aria-label="Icon gallery">
+    <Card aria-label="Icon gallery" className={className}>
       <VStack gap={3}>
         <TextInput
           type="search"

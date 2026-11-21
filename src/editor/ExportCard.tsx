@@ -13,11 +13,12 @@ interface ExportCardProps {
   glyph: Glyph | null
   style: GlassStyle
   iconName: string | null
+  className?: string
 }
 
 const COPIED_FEEDBACK_MILLISECONDS = 2000
 
-export function ExportCard({ glyph, style, iconName }: ExportCardProps) {
+export function ExportCard({ glyph, style, iconName, className }: ExportCardProps) {
   const [appName, setAppName] = useState('My App')
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
@@ -46,7 +47,7 @@ export function ExportCard({ glyph, style, iconName }: ExportCardProps) {
   }
 
   return (
-    <Card aria-label="Export">
+    <Card aria-label="Export" className={className}>
       <VStack gap={3}>
         <TextInput label="App name" value={appName} onChange={setAppName} />
         <Button
