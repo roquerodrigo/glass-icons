@@ -1,5 +1,14 @@
+import { Card } from '@astryxdesign/core/Card'
+import { HStack } from '@astryxdesign/core/HStack'
+import { Slider } from '@astryxdesign/core/Slider'
+import { Switch } from '@astryxdesign/core/Switch'
+import { Text } from '@astryxdesign/core/Text'
+import { ToggleButton } from '@astryxdesign/core/ToggleButton'
+import { VStack } from '@astryxdesign/core/VStack'
+import type { ReactNode } from 'react'
 import { presets } from '../glass/presets'
 import type { GlassStyle, GlyphMode, IconShape } from '../glass/types'
+import { ColorField } from './ColorField'
 
 interface ControlsProps {
   style: GlassStyle
@@ -14,138 +23,126 @@ const shapes: { id: IconShape; label: string }[] = [
   { id: 'square', label: 'Square' },
 ]
 
+const formatPercent = (value: number) => `${Math.round(value * 100)}%`
+
+function ControlGroup({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <VStack gap={2}>
+      <Text type="label" color="secondary">
+        {title}
+      </Text>
+      {children}
+    </VStack>
+  )
+}
+
 export function Controls({ style, glyphMode, onChange }: ControlsProps) {
   const patch = (changes: Partial<GlassStyle>) => onChange({ ...style, ...changes })
 
   return (
-    <section className="controls" aria-label="Style controls">
-      <div className="control-group">
-        <span className="control-label">Presets</span>
-        <div className="preset-row">
-          {presets.map((preset) => (
-            <button
-              key={preset.name}
-              type="button"
-              className="preset-swatch"
-              title={preset.name}
-              style={{ background: `linear-gradient(160deg, ${preset.backgroundTop}, ${preset.backgroundBottom})` }}
-              onClick={() => patch({ backgroundTop: preset.backgroundTop, backgroundBottom: preset.backgroundBottom })}
-            />
-          ))}
-        </div>
-      </div>
+    <Card aria-label="Style controls">
+      <VStack gap={5}>
+        <ControlGroup title="Presets">
+          <HStack gap={1} wrap="wrap">
+            {presets.map((preset) => (
+              <ToggleButton
+                key={preset.name}
+                label={preset.name}
+                tooltip={preset.name}
+                className="preset-button"
+                isPressed={style.backgroundTop === preset.backgroundTop && style.backgroundBottom === preset.backgroundBottom}
+                onPressedChange={() => patch({ backgroundTop: preset.backgroundTop, backgroundBottom: preset.backgroundBottom })}
+              >
+                <span
+                  className="preset-swatch"
+                  style={{ background: `linear-gradient(160deg, ${preset.backgroundTop}, ${preset.backgroundBottom})` }}
+                />
+              </ToggleButton>
+            ))}
+          </HStack>
+        </ControlGroup>
 
-      <div className="control-group">
-        <span className="control-label">Background</span>
-        <div className="control-row">
-          <label className="color-field">
-            <input type="color" value={style.backgroundTop} onChange={(event) => patch({ backgroundTop: event.target.value })} />
-            Top
-          </label>
-          <label className="color-field">
-            <input type="color" value={style.backgroundBottom} onChange={(event) => patch({ backgroundBottom: event.target.value })} />
-            Bottom
-          </label>
-        </div>
-      </div>
+        <ControlGroup title="Background">
+          <HStack gap={4} wrap="wrap">
+            <ColorField label="Top" value={style.backgroundTop} onChange={(backgroundTop) => patch({ backgroundTop })} />
+            <ColorField label="Bottom" value={style.backgroundBottom} onChange={(backgroundBottom) => patch({ backgroundBottom })} />
+          </HStack>
+        </ControlGroup>
 
-      <div className="control-group">
-        <span className="control-label">Glyph</span>
-        <div className="control-row">
+        <ControlGroup title="Glyph">
           {glyphMode === 'glass' ? (
-            <label className="color-field">
-              <input type="color" value={style.glassTint} onChange={(event) => patch({ glassTint: event.target.value })} />
-              Tint
-            </label>
+            <ColorField label="Tint" value={style.glassTint} onChange={(glassTint) => patch({ glassTint })} />
           ) : (
-            <label className="color-field">
-              <input type="color" value={style.glyphColor} onChange={(event) => patch({ glyphColor: event.target.value })} />
-              Color
-            </label>
+            <ColorField label="Color" value={style.glyphColor} onChange={(glyphColor) => patch({ glyphColor })} />
           )}
-          <label className="slider-field">
-            <input
-              type="range"
-              min="0.35"
-              max="0.8"
-              step="0.01"
-              value={style.glyphScale}
-              onChange={(event) => patch({ glyphScale: Number(event.target.value) })}
-            />
-            Size
-          </label>
-          <button
-            type="button"
-            className={style.opticalAlignment ? 'chip chip-active' : 'chip'}
-            aria-pressed={style.opticalAlignment}
-            title="Center by the glyph's visual mass instead of its bounding box"
-            onClick={() => patch({ opticalAlignment: !style.opticalAlignment })}
-          >
-            Optical centering
-          </button>
-        </div>
-      </div>
+          <Slider
+            label="Size"
+            min={0.35}
+            max={0.8}
+            step={0.01}
+            value={style.glyphScale}
+            formatValue={formatPercent}
+            valueDisplay="text"
+            onChange={(glyphScale: number) => patch({ glyphScale })}
+          />
+          <Switch
+            label="Optical centering"
+            description="Center by the glyph's visual mass instead of its bounding box"
+            value={style.opticalAlignment}
+            onChange={(opticalAlignment) => patch({ opticalAlignment })}
+          />
+        </ControlGroup>
 
-      <div className="control-group">
-        <span className="control-label">Glass</span>
-        <div className="control-row">
-          <label className="slider-field">
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.05"
-              value={style.glassIntensity}
-              onChange={(event) => patch({ glassIntensity: Number(event.target.value) })}
-            />
-            Intensity
-          </label>
-        </div>
-      </div>
+        <ControlGroup title="Glass">
+          <Slider
+            label="Intensity"
+            min={0}
+            max={1}
+            step={0.05}
+            value={style.glassIntensity}
+            formatValue={formatPercent}
+            valueDisplay="text"
+            onChange={(glassIntensity: number) => patch({ glassIntensity })}
+          />
+        </ControlGroup>
 
-      <div className="control-group">
-        <span className="control-label">Shadow</span>
-        <div className="control-row">
-          <label className="slider-field">
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.05"
-              value={style.shadowOpacity}
-              onChange={(event) => patch({ shadowOpacity: Number(event.target.value) })}
-            />
-            Opacity
-          </label>
-          <label className="slider-field">
-            <input
-              type="range"
-              min="0"
-              max="32"
-              step="1"
-              value={style.shadowBlur}
-              onChange={(event) => patch({ shadowBlur: Number(event.target.value) })}
-            />
-            Blur
-          </label>
-        </div>
-      </div>
+        <ControlGroup title="Shadow">
+          <Slider
+            label="Opacity"
+            min={0}
+            max={1}
+            step={0.05}
+            value={style.shadowOpacity}
+            formatValue={formatPercent}
+            valueDisplay="text"
+            onChange={(shadowOpacity: number) => patch({ shadowOpacity })}
+          />
+          <Slider
+            label="Blur"
+            min={0}
+            max={32}
+            step={1}
+            value={style.shadowBlur}
+            formatValue={(value) => `${value}px`}
+            valueDisplay="text"
+            onChange={(shadowBlur: number) => patch({ shadowBlur })}
+          />
+        </ControlGroup>
 
-      <div className="control-group">
-        <span className="control-label">Shape</span>
-        <div className="control-row">
-          {shapes.map((shape) => (
-            <button
-              key={shape.id}
-              type="button"
-              className={style.shape === shape.id ? 'chip chip-active' : 'chip'}
-              onClick={() => patch({ shape: shape.id })}
-            >
-              {shape.label}
-            </button>
-          ))}
-        </div>
-      </div>
-    </section>
+        <ControlGroup title="Shape">
+          <HStack gap={1} wrap="wrap" role="group" aria-label="Shape">
+            {shapes.map((shape) => (
+              <ToggleButton
+                key={shape.id}
+                label={shape.label}
+                size="sm"
+                isPressed={style.shape === shape.id}
+                onPressedChange={() => patch({ shape: shape.id })}
+              />
+            ))}
+          </HStack>
+        </ControlGroup>
+      </VStack>
+    </Card>
   )
 }

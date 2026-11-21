@@ -13,11 +13,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@astryxdesign/core": "^0.7.17",
+    "@astryxdesign/theme-neutral": "^0.7.17",
+    "@stylexjs/stylex": "^0.19.2",
     "fflate": "^0.8.3",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
+    "@astryxdesign/cli": "^0.7.17",
     "@phosphor-icons/core": "^2.1.1",
     "@tabler/icons": "^3.52.0",
     "@types/node": "^26.6.6",
