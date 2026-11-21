@@ -74,20 +74,50 @@ export function Controls({ style, glyphMode, onChange, className }: ControlsProp
             onChange={(backgroundGradient) => patch({ backgroundGradient })}
           />
           {style.backgroundGradient ? (
-            <HStack gap={4} wrap="wrap">
-              <ColorField label="Top" value={style.backgroundTop} onChange={(backgroundTop) => patch({ backgroundTop })} />
-              <ColorField label="Bottom" value={style.backgroundBottom} onChange={(backgroundBottom) => patch({ backgroundBottom })} />
-            </HStack>
+            <VStack gap={3}>
+              <ColorField
+                label="Top"
+                value={style.backgroundTop}
+                opacity={style.backgroundTopOpacity}
+                onChange={(backgroundTop) => patch({ backgroundTop })}
+                onOpacityChange={(backgroundTopOpacity) => patch({ backgroundTopOpacity })}
+              />
+              <ColorField
+                label="Bottom"
+                value={style.backgroundBottom}
+                opacity={style.backgroundBottomOpacity}
+                onChange={(backgroundBottom) => patch({ backgroundBottom })}
+                onOpacityChange={(backgroundBottomOpacity) => patch({ backgroundBottomOpacity })}
+              />
+            </VStack>
           ) : (
-            <ColorField label="Color" value={style.backgroundBottom} onChange={(backgroundBottom) => patch({ backgroundBottom })} />
+            <ColorField
+              label="Color"
+              value={style.backgroundBottom}
+              opacity={style.backgroundBottomOpacity}
+              onChange={(backgroundBottom) => patch({ backgroundBottom })}
+              onOpacityChange={(backgroundBottomOpacity) => patch({ backgroundBottomOpacity })}
+            />
           )}
         </ControlGroup>
 
         <ControlGroup title="Glyph">
           {glyphMode === 'glass' ? (
-            <ColorField label="Tint" value={style.glassTint} onChange={(glassTint) => patch({ glassTint })} />
+            <ColorField
+              label="Tint"
+              value={style.glassTint}
+              opacity={style.glyphOpacity}
+              onChange={(glassTint) => patch({ glassTint })}
+              onOpacityChange={(glyphOpacity) => patch({ glyphOpacity })}
+            />
           ) : (
-            <ColorField label="Color" value={style.glyphColor} onChange={(glyphColor) => patch({ glyphColor })} />
+            <ColorField
+              label="Color"
+              value={style.glyphColor}
+              opacity={style.glyphOpacity}
+              onChange={(glyphColor) => patch({ glyphColor })}
+              onOpacityChange={(glyphOpacity) => patch({ glyphOpacity })}
+            />
           )}
           <Slider
             label="Size"

@@ -1,4 +1,5 @@
 import { strToU8, zipSync } from 'fflate'
+import { withOpaqueBackground } from '../glass/background'
 import { composeIconSvg } from '../glass/compose'
 import type { GlassStyle, Glyph } from '../glass/types'
 import { buildIco } from './ico'
@@ -9,7 +10,7 @@ const MASKABLE_SAFE_ZONE = 0.8
 
 export async function buildAssetZip(glyph: Glyph, style: GlassStyle, identity: AppIdentity): Promise<Blob> {
   const shaped = composeIconSvg(glyph, style, { fullBleed: false, safeZone: 1 })
-  const fullBleed = composeIconSvg(glyph, style, { fullBleed: true, safeZone: 1 })
+  const opaqueFullBleed = composeIconSvg(glyph, withOpaqueBackground(style), { fullBleed: true, safeZone: 1 })
   const maskable = composeIconSvg(glyph, style, { fullBleed: true, safeZone: MASKABLE_SAFE_ZONE })
 
   const [pwa192, pwa512, maskable192, maskable512, appleTouch, favicon16, favicon32, favicon48] = await Promise.all([
@@ -17,7 +18,7 @@ export async function buildAssetZip(glyph: Glyph, style: GlassStyle, identity: A
     rasterizeSvg(shaped, 512),
     rasterizeSvg(maskable, 192),
     rasterizeSvg(maskable, 512),
-    rasterizeSvg(fullBleed, 180),
+    rasterizeSvg(opaqueFullBleed, 180),
     rasterizeSvg(shaped, 16),
     rasterizeSvg(shaped, 32),
     rasterizeSvg(shaped, 48),
