@@ -30,23 +30,15 @@ export function useCatalog(): { catalog: Catalog | null; error: string | null } 
   return { catalog, error }
 }
 
-export function searchIcons(catalog: Catalog, query: string, setFilter: string | null, limit: number): CatalogIcon[] {
+export function searchIcons(catalog: Catalog, query: string, setFilter: string | null): CatalogIcon[] {
   const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
-  const results: CatalogIcon[] = []
-  for (const icon of catalog.icons) {
-    if (setFilter && icon.set !== setFilter) continue
+  return catalog.icons.filter((icon) => {
+    if (setFilter && icon.set !== setFilter) return false
     const haystack = icon.title ? `${icon.name} ${icon.title.toLowerCase()}` : icon.name
-    if (terms.every((term) => haystack.includes(term))) {
-      results.push(icon)
-      if (results.length >= limit) break
-    }
-  }
-  return results
+    return terms.every((term) => haystack.includes(term))
+  })
 }
 
-export function useIconSearch(catalog: Catalog | null, query: string, setFilter: string | null, limit = 240): CatalogIcon[] {
-  return useMemo(() => {
-    if (!catalog) return []
-    return searchIcons(catalog, query, setFilter, limit)
-  }, [catalog, query, setFilter, limit])
+export function useIconSearch(catalog: Catalog | null, query: string, setFilter: string | null): CatalogIcon[] {
+  return useMemo(() => (catalog ? searchIcons(catalog, query, setFilter) : []), [catalog, query, setFilter])
 }

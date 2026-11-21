@@ -1,15 +1,12 @@
 import { Card } from '@astryxdesign/core/Card'
-import { Grid } from '@astryxdesign/core/Grid'
-import { ScrollableArea } from '@astryxdesign/core/ScrollableArea'
 import { Selector, type SelectorOptionType } from '@astryxdesign/core/Selector'
 import { Text } from '@astryxdesign/core/Text'
 import { TextInput } from '@astryxdesign/core/TextInput'
-import { ToggleButton } from '@astryxdesign/core/ToggleButton'
 import { VStack } from '@astryxdesign/core/VStack'
 import { useMemo, useState } from 'react'
-import { iconSvgUrl } from '../catalog/glyphLoader'
 import type { Catalog, CatalogIcon, IconSetInfo } from '../catalog/types'
 import { useIconSearch } from '../catalog/useCatalog'
+import { IconGrid } from './IconGrid'
 
 interface GalleryProps {
   catalog: Catalog
@@ -18,7 +15,6 @@ interface GalleryProps {
   className?: string
 }
 
-const RESULT_LIMIT = 240
 const ALL_SETS = 'all'
 
 function buildSetOptions(catalog: Catalog): SelectorOptionType[] {
@@ -40,7 +36,7 @@ function buildSetOptions(catalog: Catalog): SelectorOptionType[] {
 export function Gallery({ catalog, selected, onSelect, className }: GalleryProps) {
   const [query, setQuery] = useState('')
   const [setFilter, setSetFilter] = useState<string | null>(null)
-  const results = useIconSearch(catalog, query, setFilter, RESULT_LIMIT)
+  const results = useIconSearch(catalog, query, setFilter)
   const setOptions = useMemo(() => buildSetOptions(catalog), [catalog])
   const darkTileSets = useMemo(() => new Set(catalog.sets.filter((set) => set.mode === 'glass').map((set) => set.id)), [catalog])
 
@@ -65,25 +61,10 @@ export function Gallery({ catalog, selected, onSelect, className }: GalleryProps
           value={setFilter ?? ALL_SETS}
           onChange={(value) => setSetFilter(value === ALL_SETS ? null : value)}
         />
-        <ScrollableArea label="Icons" padding={1} className="gallery-scroll">
-          <Grid columns={{ minWidth: 46 }} gap={2}>
-            {results.map((icon) => (
-              <ToggleButton
-                key={`${icon.set}/${icon.name}`}
-                label={icon.title ?? icon.name}
-                tooltip={icon.title ?? icon.name}
-                isPressed={selected?.set === icon.set && selected?.name === icon.name}
-                onPressedChange={() => onSelect(icon)}
-                className={`icon-tile ${darkTileSets.has(icon.set) ? 'icon-tile-dark' : 'icon-tile-light'}`}
-              >
-                <img src={iconSvgUrl(icon)} alt="" loading="lazy" width="28" height="28" />
-              </ToggleButton>
-            ))}
-          </Grid>
-        </ScrollableArea>
-        {results.length >= RESULT_LIMIT && (
+        <IconGrid icons={results} selected={selected} darkTileSets={darkTileSets} onSelect={onSelect} />
+        {results.length > 0 && (
           <Text type="supporting" color="secondary">
-            Showing the first {RESULT_LIMIT} matches — refine the search to narrow down.
+            {results.length.toLocaleString('en-US')} {results.length === 1 ? 'icon' : 'icons'}
           </Text>
         )}
         {results.length === 0 && (
