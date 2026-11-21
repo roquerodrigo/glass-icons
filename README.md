@@ -8,9 +8,11 @@ Compose Liquid Glass style app icons from open licensed icon sets and download t
 
 ## What it does
 
-- Browse 12,000+ icons from six open licensed sets: [Icons8 Liquid Glass](https://github.com/icons8/liquid-glass-icons) (MIT), [Lucide](https://lucide.dev) (ISC), [Tabler Icons](https://tabler.io/icons) (MIT), [Phosphor](https://phosphoricons.com) (MIT), [Heroicons](https://heroicons.com) (MIT) and [Simple Icons](https://simpleicons.org) (CC0).
+- Browse 30,000+ icons from sixteen open licensed sets:
+  - Monochrome: [Lucide](https://lucide.dev) (ISC), [Tabler Icons](https://tabler.io/icons) (MIT), [Phosphor](https://phosphoricons.com) (MIT), [Heroicons](https://heroicons.com) (MIT) and [Simple Icons](https://simpleicons.org) (CC0).
+  - Color, keeping their own palette: [Icons8 Liquid Glass](https://github.com/icons8/liquid-glass-icons) (MIT), [Fluent UI System Color Icons](https://github.com/microsoft/fluentui-system-icons) (MIT), [Fluent Emoji](https://github.com/microsoft/fluentui-emoji) flat and 3D (MIT), [Noto Emoji](https://github.com/googlefonts/noto-emoji) current and v1 (Apache 2.0), [Flat Color Icons](https://github.com/icons8/flat-color-icons) (MIT), [Glyphs Poly](https://github.com/gorango/glyphs) (MIT), [IconPark](https://github.com/bytedance/IconPark) (Apache 2.0), [Meteocons](https://github.com/basmilius/meteocons) (MIT) and [Flat UI](https://github.com/designmodo/Flat-UI) (MIT).
 - Compose any glyph over a Liquid Glass background generated as self-contained SVG: superellipse squircle, layered gradients, specular highlight and rim light — no `backdrop-filter`, so the preview and the exported PNGs are pixel-identical.
-- Customize the background (gradient or solid color, each color with its own opacity), glyph color or glass tint, glyph size, glass intensity and shape (squircle, circle, rounded, square).
+- Customize the background (gradient or solid color, each color with its own opacity), glyph color, glass tint or glyph opacity, glyph size, glass intensity and shape (squircle, circle, rounded, square).
 - Export a ZIP with everything a PWA needs:
   - `pwa-192x192.png`, `pwa-512x512.png`
   - `maskable-192x192.png`, `maskable-512x512.png` (80% safe zone, full-bleed background)
@@ -39,7 +41,7 @@ npm run build
 
 | Path | Responsibility |
 | --- | --- |
-| `scripts/build-catalog.ts` | Extracts and normalizes SVGs from the icon packages into `public/icons/` plus a searchable `public/catalog.json` |
+| `scripts/build-catalog.ts` | Extracts and normalizes SVGs from the icon packages (plain SVG files, `@iconify-json/*` collections and the static `@meteocons/svg-static` build) into `public/icons/` plus a searchable `public/catalog.json` |
 | `src/catalog/` | Catalog loading, search and glyph fetching |
 | `src/glass/` | The Liquid Glass engine: shapes, layered background, composition into a standalone SVG |
 | `src/editor/` | Gallery, live preview, style controls and the export card, composed from Astryx components |
