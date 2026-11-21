@@ -102,9 +102,29 @@
 }
 
 .preview-main {
-  filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.45));
+  display: block;
   height: clamp(160px, 24vw, 256px);
+  position: relative;
   width: clamp(160px, 24vw, 256px);
+}
+
+.icon-canvas {
+  display: block;
+  height: var(--icon-size);
+  width: var(--icon-size);
+}
+
+.preview-main > * {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.preview-main-shadow {
+  filter: blur(20px) brightness(0);
+  opacity: 0.45;
+  transform: translateY(24px);
 }
 
 .preview-maskable {

@@ -25,6 +25,11 @@ will not pick those changes up.
   gradients, specular/rim light) with **no `backdrop-filter`**, on purpose: that
   keeps the on-screen preview and the rasterized PNG export pixel-identical. Do
   not reach for `backdrop-filter`/CSS glass — it would desync preview and output.
+- The editor preview is drawn on `<canvas>` at `devicePixelRatio` through the
+  same `drawSvgOnCanvas` path the PNG export uses (`src/editor/IconCanvas.tsx`).
+  Keep CSS `filter` off the visible preview: WebKit rasterizes filtered elements
+  at 1x, which blurs them on retina screens. The drop shadow is a separate,
+  blurred copy behind the icon.
 - `vite.config.ts` sets `base: '/glass-icons/'` because the site lives under a
   Pages subpath. Changing it breaks all asset URLs in the deployed build.
 - Icons8 Liquid Glass icons are vendored as `.tsx` React components under
