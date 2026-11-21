@@ -10,7 +10,7 @@ Compose Liquid Glass style app icons from open licensed icon sets and download t
 
 - Browse 12,000+ icons from six open licensed sets: [Icons8 Liquid Glass](https://github.com/icons8/liquid-glass-icons) (MIT), [Lucide](https://lucide.dev) (ISC), [Tabler Icons](https://tabler.io/icons) (MIT), [Phosphor](https://phosphoricons.com) (MIT), [Heroicons](https://heroicons.com) (MIT) and [Simple Icons](https://simpleicons.org) (CC0).
 - Compose any glyph over a Liquid Glass background generated as self-contained SVG: superellipse squircle, layered gradients, specular highlight and rim light — no `backdrop-filter`, so the preview and the exported PNGs are pixel-identical.
-- Customize background gradient, glyph color or glass tint, glyph size, glass intensity and shape (squircle, circle, rounded, square).
+- Customize the background (gradient or solid color), glyph color or glass tint, glyph size, glass intensity and shape (squircle, circle, rounded, square).
 - Export a ZIP with everything a PWA needs:
   - `pwa-192x192.png`, `pwa-512x512.png`
   - `maskable-192x192.png`, `maskable-512x512.png` (80% safe zone, full-bleed background)

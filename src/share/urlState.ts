@@ -36,6 +36,7 @@ export function readSharedState(search: string): SharedState {
     style: {
       backgroundTop: parseColor(params.get('bg1'), defaultStyle.backgroundTop),
       backgroundBottom: parseColor(params.get('bg2'), defaultStyle.backgroundBottom),
+      backgroundGradient: params.get('gradient') !== '0',
       glyphColor: parseColor(params.get('color'), defaultStyle.glyphColor),
       glassTint: parseColor(params.get('tint'), defaultStyle.glassTint),
       glyphScale: parseFraction(params.get('size'), 0.35, 0.8, defaultStyle.glyphScale),
@@ -62,6 +63,7 @@ export function buildShareQuery(icon: SharedIcon, style: GlassStyle): string {
     shape: style.shape,
   })
   if (style.opticalAlignment) params.set('optical', '1')
+  if (!style.backgroundGradient) params.set('gradient', '0')
   return params.toString()
 }
 

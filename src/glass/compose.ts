@@ -1,3 +1,4 @@
+import { backgroundStartColor } from './background'
 import { shapePath } from './shapes'
 import type { GlassStyle, Glyph, OutputVariant } from './types'
 
@@ -13,7 +14,7 @@ function clamp(value: number, limit: number): number {
 function backgroundDefs(style: GlassStyle, clipPathData: string | null): string {
   return [
     '<defs>',
-    `<linearGradient id="bg" x1="0" y1="0" x2="0.3" y2="1"><stop offset="0" stop-color="${style.backgroundTop}"/><stop offset="1" stop-color="${style.backgroundBottom}"/></linearGradient>`,
+    `<linearGradient id="bg" x1="0" y1="0" x2="0.3" y2="1"><stop offset="0" stop-color="${backgroundStartColor(style)}"/><stop offset="1" stop-color="${style.backgroundBottom}"/></linearGradient>`,
     '<radialGradient id="sheen" cx="0.5" cy="-0.15" r="1.1"><stop offset="0" stop-color="#fff" stop-opacity="0.55"/><stop offset="0.55" stop-color="#fff" stop-opacity="0"/></radialGradient>',
     '<linearGradient id="rim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.95"/><stop offset="0.5" stop-color="#fff" stop-opacity="0.12"/><stop offset="1" stop-color="#fff" stop-opacity="0.45"/></linearGradient>',
     '<linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.32"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>',

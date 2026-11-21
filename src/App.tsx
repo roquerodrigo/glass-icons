@@ -15,6 +15,7 @@ import { ExportCard } from './editor/ExportCard'
 import { Gallery } from './editor/Gallery'
 import { LicensesFooter } from './editor/LicensesFooter'
 import { Preview } from './editor/Preview'
+import { backgroundStartColor } from './glass/background'
 import type { GlassStyle, Glyph } from './glass/types'
 import { readSharedState, syncUrl } from './share/urlState'
 
@@ -60,7 +61,7 @@ export default function App() {
     <Layout
       height="auto"
       className="workspace"
-      style={{ '--ambient-top': style.backgroundTop, '--ambient-bottom': style.backgroundBottom } as React.CSSProperties}
+      style={{ '--ambient-top': backgroundStartColor(style), '--ambient-bottom': style.backgroundBottom } as React.CSSProperties}
       header={
         <LayoutHeader>
           <VStack gap={1}>
