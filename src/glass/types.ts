@@ -13,8 +13,11 @@ export interface GlassStyle {
   backgroundTop: string
   backgroundBottom: string
   backgroundGradient: boolean
+  backgroundTopOpacity: number
+  backgroundBottomOpacity: number
   glyphColor: string
   glassTint: string
+  glyphOpacity: number
   glyphScale: number
   glassIntensity: number
   shadowOpacity: number

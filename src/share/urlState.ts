@@ -37,8 +37,11 @@ export function readSharedState(search: string): SharedState {
       backgroundTop: parseColor(params.get('bg1'), defaultStyle.backgroundTop),
       backgroundBottom: parseColor(params.get('bg2'), defaultStyle.backgroundBottom),
       backgroundGradient: params.get('gradient') !== '0',
+      backgroundTopOpacity: parseFraction(params.get('bg1a'), 0, 1, defaultStyle.backgroundTopOpacity),
+      backgroundBottomOpacity: parseFraction(params.get('bg2a'), 0, 1, defaultStyle.backgroundBottomOpacity),
       glyphColor: parseColor(params.get('color'), defaultStyle.glyphColor),
       glassTint: parseColor(params.get('tint'), defaultStyle.glassTint),
+      glyphOpacity: parseFraction(params.get('glypha'), 0, 1, defaultStyle.glyphOpacity),
       glyphScale: parseFraction(params.get('size'), 0.35, 0.8, defaultStyle.glyphScale),
       glassIntensity: parseFraction(params.get('glass'), 0, 1, defaultStyle.glassIntensity),
       shadowOpacity: parseFraction(params.get('shadow'), 0, 1, defaultStyle.shadowOpacity),
@@ -64,6 +67,9 @@ export function buildShareQuery(icon: SharedIcon, style: GlassStyle): string {
   })
   if (style.opticalAlignment) params.set('optical', '1')
   if (!style.backgroundGradient) params.set('gradient', '0')
+  if (style.backgroundTopOpacity < 1) params.set('bg1a', String(style.backgroundTopOpacity))
+  if (style.backgroundBottomOpacity < 1) params.set('bg2a', String(style.backgroundBottomOpacity))
+  if (style.glyphOpacity < 1) params.set('glypha', String(style.glyphOpacity))
   return params.toString()
 }
 
