@@ -1,4 +1,4 @@
-export type GlyphMode = 'stroke' | 'fill' | 'glass'
+export type GlyphMode = 'stroke' | 'fill' | 'glass' | 'color'
 
 export type IconShape = 'squircle' | 'circle' | 'rounded' | 'square'
 

@@ -1,6 +1,6 @@
 # glass-icons
 
-Browser-only Liquid Glass PWA icon generator. Composes glyphs from six open icon
+Browser-only Liquid Glass PWA icon generator. Composes glyphs from sixteen open icon
 sets over a self-contained glass SVG background and exports a full PWA asset ZIP.
 Everything runs client side; there is no backend. Deployed to GitHub Pages at
 `/glass-icons/`. Public repo — see README for the icon sets and their licenses.
@@ -34,13 +34,22 @@ will not pick those changes up.
   Pages subpath. Changing it breaks all asset URLs in the deployed build.
 - Icons8 Liquid Glass icons are vendored as `.tsx` React components under
   `vendor/icons8-liquid-glass/`, pinned to the hash in that dir's `COMMIT` file
-  (upstream ships no npm package). The other five sets come from npm deps.
+  (upstream ships no npm package). Every other set comes from an npm devDependency:
+  the monochrome sets from their own packages, the color sets from
+  `@iconify-json/*` collections, and Meteocons from `@meteocons/svg-static`
+  (the static build: the Iconify Meteocons are SMIL-animated, and rasterizing
+  an animation captures an arbitrary frame).
 - `build-catalog.ts` normalizes each glyph: the root `<svg>` presentation
   attributes move onto a wrapping `<g>`, so `stroke` sets keep the
   `currentColor` stroke their upstream markup already carries (the script adds
   none); `fill` sets get `currentColor` fill only when they carry no paint of
-  their own; `glass` (Icons8) keeps its baked-in colors. Preserve this per-set
-  `mode` handling when touching the script.
+  their own; `glass` (Icons8) keeps its baked-in colors and takes the tint;
+  `color` sets keep their own palette and only take the glyph opacity. Preserve
+  this per-set `mode` handling when touching the script.
+- Glyph IDs are namespaced per icon (`id`, `url(#…)` and `href="#…"`) so they
+  cannot collide with the composer's own `<defs>`, and Iconify bodies have
+  `xlink:href` rewritten to `href`: the composed SVG declares no `xlink`
+  namespace, and an unbound prefix makes the whole image fail to load.
 
 ## CI / release
 GitHub Pages deploy runs on push to `main` (`.github/workflows/deploy.yml`:
