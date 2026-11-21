@@ -1,14 +1,14 @@
 import { Card } from '@astryxdesign/core/Card'
 import { Grid } from '@astryxdesign/core/Grid'
-import { HStack } from '@astryxdesign/core/HStack'
 import { ScrollableArea } from '@astryxdesign/core/ScrollableArea'
+import { Selector, type SelectorOptionType } from '@astryxdesign/core/Selector'
 import { Text } from '@astryxdesign/core/Text'
 import { TextInput } from '@astryxdesign/core/TextInput'
 import { ToggleButton } from '@astryxdesign/core/ToggleButton'
 import { VStack } from '@astryxdesign/core/VStack'
 import { useMemo, useState } from 'react'
 import { iconSvgUrl } from '../catalog/glyphLoader'
-import type { Catalog, CatalogIcon } from '../catalog/types'
+import type { Catalog, CatalogIcon, IconSetInfo } from '../catalog/types'
 import { useIconSearch } from '../catalog/useCatalog'
 
 interface GalleryProps {
@@ -19,11 +19,29 @@ interface GalleryProps {
 }
 
 const RESULT_LIMIT = 240
+const ALL_SETS = 'all'
+
+function buildSetOptions(catalog: Catalog): SelectorOptionType[] {
+  const iconCounts = new Map<string, number>()
+  for (const icon of catalog.icons) iconCounts.set(icon.set, (iconCounts.get(icon.set) ?? 0) + 1)
+  const toOption = (set: IconSetInfo) => ({
+    value: set.id,
+    label: set.label,
+    description: `${(iconCounts.get(set.id) ?? 0).toLocaleString('en-US')} icons · ${set.license}`,
+  })
+  const isColorSet = (set: IconSetInfo) => set.mode === 'glass' || set.mode === 'color'
+  return [
+    { value: ALL_SETS, label: 'All sets', description: `${catalog.icons.length.toLocaleString('en-US')} icons` },
+    { type: 'section', title: 'Color', options: catalog.sets.filter(isColorSet).map(toOption) },
+    { type: 'section', title: 'Monochrome', options: catalog.sets.filter((set) => !isColorSet(set)).map(toOption) },
+  ]
+}
 
 export function Gallery({ catalog, selected, onSelect, className }: GalleryProps) {
   const [query, setQuery] = useState('')
   const [setFilter, setSetFilter] = useState<string | null>(null)
   const results = useIconSearch(catalog, query, setFilter, RESULT_LIMIT)
+  const setOptions = useMemo(() => buildSetOptions(catalog), [catalog])
   const darkTileSets = useMemo(() => new Set(catalog.sets.filter((set) => set.mode === 'glass').map((set) => set.id)), [catalog])
 
   return (
@@ -39,18 +57,14 @@ export function Gallery({ catalog, selected, onSelect, className }: GalleryProps
           value={query}
           onChange={setQuery}
         />
-        <HStack gap={1} wrap="wrap" role="group" aria-label="Icon sets">
-          <ToggleButton label="All" size="sm" isPressed={setFilter === null} onPressedChange={() => setSetFilter(null)} />
-          {catalog.sets.map((set) => (
-            <ToggleButton
-              key={set.id}
-              label={set.label}
-              size="sm"
-              isPressed={setFilter === set.id}
-              onPressedChange={(isPressed) => setSetFilter(isPressed ? set.id : null)}
-            />
-          ))}
-        </HStack>
+        <Selector
+          label="Icon set"
+          isLabelHidden
+          presentation="adaptive"
+          options={setOptions}
+          value={setFilter ?? ALL_SETS}
+          onChange={(value) => setSetFilter(value === ALL_SETS ? null : value)}
+        />
         <ScrollableArea label="Icons" padding={1} className="gallery-scroll">
           <Grid columns={{ minWidth: 46 }} gap={2}>
             {results.map((icon) => (
